@@ -192,8 +192,11 @@ def agentLoop(agent, debug):
                             print("Percepcion recibida")
                         if debug :
                             print("Enviando acciones")
-                        action, fire = client._controller.reaccionar()
-                        if client.SendAction(["movement","fire"],[str(action), fire]) :
+                        
+                        #action, fire = agent.Update(perception)
+                        #fireStr = "1" if fire == True else "0"
+                        action, fireStr = client._controller.reaccionar()
+                        if client.SendAction(["movement","fire"],[str(action), fireStr]) :
                             if debug :
                                 print("Acciones enviadas")
                         else :

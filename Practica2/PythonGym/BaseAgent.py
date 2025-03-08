@@ -21,7 +21,7 @@ class BaseAgent:
         print("Toma de decisiones del agente")
         print(perception)
         action = random.randint(0,4)
-        return action, True
+        return 0, True
     
     #Metodo que se llama al finalizar el agente, se pasa el estado de terminacion
     def End(self, win):
