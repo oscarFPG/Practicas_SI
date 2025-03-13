@@ -1,8 +1,5 @@
 from Agent__IA.Parameters import Param
-from Agent__IA.Idle import Idle
-from Agent__IA.Explorar import Explorar
-from Agent__IA.Alerta import Alerta
-from Agent__IA.Atacar import Atacar
+from Agent__IA.State import State
 
 class Controller:
 
@@ -10,7 +7,7 @@ class Controller:
     CODIGO = None
 
     def __init__(self):
-        self.state = Idle()
+        self.state = State()
         self._percepciones = []
         self._gameover = False
         self._destroyed = False
@@ -84,12 +81,17 @@ class Controller:
         codeDerecha = None
         codeIzquierda = None
 
+        direccionBlue = None
+        direccionRed = None
+
         # Detectar distancia y tipo de objeto de arriba
         objetoArriba = self._percepciones[Param.OBJETO_ARRIBA]
         if(objetoArriba == Param.BALA):
             codeArriba = Param.RED
-        elif(objetoArriba == Param.PLAYER):
+            direccionRed = Param.MOVER_ARRIBA
+        elif(objetoArriba == Param.PLAYER or objetoArriba == Param.OTRO):
             codeArriba = Param.BLUE
+            direccionBlue = Param.MOVER_ARRIBA
         else:
             codeArriba = Param.GREEN
 
@@ -98,8 +100,10 @@ class Controller:
         objetoAbajo = self._percepciones[Param.OBJETO_ABAJO]
         if(objetoAbajo == Param.BALA):
             codeAbajo = Param.RED
-        elif(objetoAbajo == Param.PLAYER):
+            direccionRed = Param.MOVER_ABAJO
+        elif(objetoAbajo == Param.PLAYER or objetoAbajo == Param.OTRO):
             codeAbajo = Param.BLUE
+            direccionBlue = Param.MOVER_ABAJO
         else:
             codeAbajo = Param.GREEN
 
@@ -107,8 +111,10 @@ class Controller:
         objetoDerecha = self._percepciones[Param.OBJETO_DERECHA]
         if(objetoDerecha == Param.BALA):
             codeDerecha = Param.RED
-        elif(objetoDerecha == Param.PLAYER):
+            direccionRed = Param.MOVER_DERECHA
+        elif(objetoDerecha == Param.PLAYER or objetoDerecha == Param.OTRO):
             codeDerecha = Param.BLUE
+            direccionBlue = Param.MOVER_DERECHA
         else:
             codeDerecha = Param.GREEN
 
@@ -116,8 +122,10 @@ class Controller:
         objetoIzquierda = self._percepciones[Param.OBJETO_IZQUIERDA]
         if(objetoIzquierda == Param.BALA):
             codeIzquierda = Param.RED
-        elif(objetoIzquierda == Param.PLAYER):
+            direccionRed = Param.MOVER_IZQUIERDA
+        elif(objetoIzquierda == Param.PLAYER or objetoIzquierda == Param.OTRO):
             codeIzquierda = Param.BLUE
+            direccionBlue = Param.MOVER_IZQUIERDA
         else:
             codeIzquierda = Param.GREEN
 
@@ -127,18 +135,16 @@ class Controller:
            codeAbajo == Param.RED or 
            codeDerecha == Param.RED or 
            codeIzquierda == Param.RED):
-            self.state = Explorar()
+            direction , fire = self.state.ejecutar_atacar(self._percepciones, direccionRed)
 
         elif(codeArriba == Param.BLUE or 
            codeAbajo == Param.BLUE or 
            codeDerecha == Param.BLUE or 
            codeIzquierda == Param.BLUE):
-            self.state = Explorar()
+            direction , fire = self.state.ejecutar_alerta(self._percepciones, direccionBlue)
            
         else:
-           self.state = Explorar()
-
-        direction, fire = self.state.execute(self._percepciones)
+           direction , fire = self.state.ejecutar_explorar(self._percepciones)
 
         self._percepciones.clear()
         return direction, fire
