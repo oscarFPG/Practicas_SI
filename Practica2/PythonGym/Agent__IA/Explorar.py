@@ -10,8 +10,16 @@ class Explorar(State):
     
     def execute(self, perceptions):
 
-        if(random.randint(0, 100) < 5):
-            return Param.MOVER_DERECHA, Param.DISPARA
+        rand = random.randint(0, 250)
+
+        if(rand < 5):
+            return Param.MOVER_DERECHA, Param.NO_DISPARA
+        elif(rand < 10):
+            return Param.MOVER_IZQUIERDA, Param.NO_DISPARA
+        elif(rand < 15):
+            return Param.MOVER_ARRIBA, Param.NO_DISPARA
+        elif(rand < 20):
+            return Param.MOVER_ABAJO, Param.NO_DISPARA
 
         # Objetos y distancias
         objetos = [
@@ -68,9 +76,17 @@ class Explorar(State):
                 siguienteDireccion = Param.MOVER_IZQUIERDA
 
         # Ver si hay que disparar
-    
+        disparar = Param.NO_DISPARA
+        if(siguienteDireccion == Param.MOVER_ARRIBA and (objetos[Param.OBJETO_ARRIBA] == Param.MURO or objetos[Param.OBJETO_ARRIBA] == Param.CENTRO_COMANDO)  and distancias[0] < 1):
+            disparar = Param.DISPARA
+        elif(siguienteDireccion == Param.MOVER_ABAJO and (objetos[Param.OBJETO_ABAJO] == Param.MURO or objetos[Param.OBJETO_ARRIBA] == Param.CENTRO_COMANDO) and distancias[1] < 1):
+            disparar = Param.DISPARA
+        elif(siguienteDireccion == Param.MOVER_DERECHA and (objetos[Param.OBJETO_DERECHA] == Param.MURO or objetos[Param.OBJETO_ARRIBA] == Param.CENTRO_COMANDO) and distancias[2] < 1):
+            disparar = Param.DISPARA
+        elif(siguienteDireccion == Param.MOVER_IZQUIERDA and (objetos[Param.OBJETO_IZQUIERDA] == Param.MURO or objetos[Param.OBJETO_ARRIBA] == Param.CENTRO_COMANDO) and distancias[3] < 1):
+            disparar = Param.DISPARA
 
-        return siguienteDireccion, Param.DISPARA
+        return siguienteDireccion, disparar
     
 
     def calcularDistanciaEntrePuntos(self, pos1_x, pos1_y, pos2_x, pos2_y) -> float:
