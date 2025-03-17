@@ -4,26 +4,45 @@ from Agent__IA.Parameters import Param
 
 class State:
 
+    MAX_CICLOS_ATASCADO = 2
+    MAX_DIST_PARA_DISPARAR = 4
+
     def __init__(self):
         self._ultimaDireccion = Param.QUIETO
+        self._ultimasCoordenadas = []
+        self._limiteCiclosAtascado = State.MAX_CICLOS_ATASCADO
         return
 
     def ejecutar_explorar(self, perceptions):
 
-        rand = random.randint(0, 200)
+        randomNum = random.randint(0, 100)
 
-        if(rand < 5):
-            self._ultimaDireccion = Param.MOVER_DERECHA
-            return Param.MOVER_DERECHA, Param.NO_DISPARA
-        elif(rand < 10):
-            self._ultimaDireccion = Param.MOVER_IZQUIERDA
-            return Param.MOVER_IZQUIERDA, Param.NO_DISPARA
-        elif(rand < 15):
-            self._ultimaDireccion = Param.MOVER_ARRIBA
-            return Param.MOVER_ARRIBA, Param.NO_DISPARA
-        elif(rand < 20):
-            self._ultimaDireccion = Param.MOVER_ABAJO
-            return Param.MOVER_ABAJO, Param.NO_DISPARA
+        current_x = perceptions[Param.AGENT_X]
+        current_y = perceptions[Param.AGENT_Y]
+
+        # Guardar la posicion por primera vez
+        if(len(self._ultimasCoordenadas) == 0):
+            self._ultimasCoordenadas.append(current_x)
+            self._ultimasCoordenadas.append(current_y)
+        else:
+
+            # Si no nos movemos -> Decrementamos contador
+            if(current_x == self._ultimasCoordenadas[0] and current_y == self._ultimasCoordenadas[1]):
+                self._limiteCiclosAtascado -= 1
+
+            # Si llegamos al limite de ciclos atascados -> Movimiento aleatorio
+            if(self._limiteCiclosAtascado == 0):
+                self._limiteCiclosAtascado = State.MAX_CICLOS_ATASCADO
+                direccion, fire = self.moverAleatoriamente(randomNum)
+                self._ultimaDireccion =  direccion
+                return direccion, fire
+            
+            else:
+                self._ultimasCoordenadas.pop()
+                self._ultimasCoordenadas.pop()
+                self._ultimasCoordenadas.append(current_x)
+                self._ultimasCoordenadas.append(current_y)
+        
 
         # Objetos y distancias
         objetos = [
@@ -97,33 +116,84 @@ class State:
         self._ultimaDireccion = siguienteDireccion
         return siguienteDireccion, disparar
     
-
     def ejecutar_alerta(self, perceptions, direccionBlue):
 
+        distanciaBlue = 0.0
         siguienteDireccion = Param.QUIETO
-        #Enfoca
+        debeDisparar = Param.NO_DISPARA
+
+        # Calcular distancia con el objetivo
+        if(direccionBlue == Param.MOVER_ARRIBA):
+            distanciaBlue = perceptions[Param.DIST_OBJETO_ARRIBA]
+        elif(direccionBlue == Param.MOVER_ABAJO):
+            distanciaBlue = perceptions[Param.DIST_OBJETO_ABAJO]
+        elif(direccionBlue == Param.MOVER_DERECHA):
+            distanciaBlue = perceptions[Param.DIST_OBJETO_DERECHA]
+        else:
+            distanciaBlue = perceptions[Param.DIST_OBJETO_IZQUIERDA]
+
+        # Enfocar a la direccion 'direccionBlue' si no lo estamos ya
         if(direccionBlue != self._ultimaDireccion):
             siguienteDireccion = direccionBlue
-
-        #dispara
-
-
         self._ultimaDireccion = siguienteDireccion
-        return 0, 0
+
+        # Disparar si estamos a cierta distancia
+        # Si no, ignorar
+        if(distanciaBlue <= State.MAX_DIST_PARA_DISPARAR):
+            debeDisparar = Param.DISPARA
+
+        return siguienteDireccion, debeDisparar
 
     def ejecutar_atacar(self, perceptions, direccionRed):
         
-        #Mirar si puede disparar
+        siguienteDireccion = Param.QUIETO
+        disparar = Param.NO_DISPARA
+        puedoDisparar = perceptions[Param.CAN_SHOOT]
 
-        #Estado Disparar
+        # Calcular distancia con el objetivo
+        if(direccionRed == Param.MOVER_ARRIBA):
+            direccionRed = perceptions[Param.DIST_OBJETO_ARRIBA]
+        elif(direccionRed == Param.MOVER_ABAJO):
+            direccionRed = perceptions[Param.DIST_OBJETO_ABAJO]
+        elif(direccionRed == Param.MOVER_DERECHA):
+            direccionRed = perceptions[Param.DIST_OBJETO_DERECHA]
+        else:
+            direccionRed = perceptions[Param.DIST_OBJETO_IZQUIERDA]
 
-        #Estado alejarse
+        # Mirar si puede disparar
+        if(puedoDisparar):
+            disparar = Param.DISPARA
+
+        # Estado Disparar
 
 
-        return 0, 0
+        # Estado alejarse
 
+
+        self._ultimaDireccion = siguienteDireccion
+
+        return siguienteDireccion, disparar
+
+
+## ------------------------- METODOS AUXILIARES ------------------------- ##
     def calcularDistanciaEntrePuntos(self, pos1_x, pos1_y, pos2_x, pos2_y) -> float:
 
         distanciaX = abs(pos1_x - pos2_x)
         distanciaY = abs(pos1_y - pos2_y)
         return math.sqrt( (distanciaX ** 2) + (distanciaY ** 2) )
+    
+    def moverAleatoriamente(self, probabilidad):
+
+        print("MOVIMIENTO ALEATORIO")
+        if(probabilidad < 25):
+            self._ultimaDireccion = Param.MOVER_DERECHA
+            return Param.MOVER_DERECHA, Param.NO_DISPARA
+        elif(probabilidad < 50):
+            self._ultimaDireccion = Param.MOVER_IZQUIERDA
+            return Param.MOVER_IZQUIERDA, Param.NO_DISPARA
+        elif(probabilidad < 75):
+            self._ultimaDireccion = Param.MOVER_ARRIBA
+            return Param.MOVER_ARRIBA, Param.NO_DISPARA
+        else:
+            self._ultimaDireccion = Param.MOVER_ABAJO
+            return Param.MOVER_ABAJO, Param.NO_DISPARA

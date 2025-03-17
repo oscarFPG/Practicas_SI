@@ -14,7 +14,7 @@ class Controller:
 
 
     def recibirEntorno(self, perceptions, gameover, destroyed):
-
+        
         # Tipo de objeto
         self._percepciones.append(perceptions[Param.OBJETO_ARRIBA])
         self._percepciones.append(perceptions[Param.OBJETO_ABAJO])
