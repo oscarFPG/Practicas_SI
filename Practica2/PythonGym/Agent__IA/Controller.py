@@ -84,6 +84,15 @@ class Controller:
         direccionBlue = None
         direccionRed = None
 
+        if(self.state._huyendo):
+            if(self.state._cicloHuida == 0):
+                self.state._huyendo = False
+                self.state._cicloHuida = State.MAX_CICLOS_HUIDA
+            else:
+                print("CICLOS DE HUIDA:" + str(self.state._cicloHuida))
+                self.state._cicloHuida = self.state._cicloHuida - 1
+                return self.state._ultimaDireccion, Param.NO_DISPARA
+
         # Detectar distancia y tipo de objeto de arriba
         objetoArriba = self._percepciones[Param.OBJETO_ARRIBA]
         if(objetoArriba == Param.BALA):
@@ -135,13 +144,13 @@ class Controller:
            codeAbajo == Param.RED or 
            codeDerecha == Param.RED or 
            codeIzquierda == Param.RED):
-            direction , fire = self.state.ejecutar_atacar(self._percepciones, direccionRed)
+            direction , fire = self.state.ejecutar_defensa(self._percepciones, direccionRed)
 
         elif(codeArriba == Param.BLUE or 
            codeAbajo == Param.BLUE or 
            codeDerecha == Param.BLUE or 
            codeIzquierda == Param.BLUE):
-            direction , fire = self.state.ejecutar_alerta(self._percepciones, direccionBlue)
+            direction , fire = self.state.ejecutar_ataque(self._percepciones, direccionBlue)
            
         else:
            direction , fire = self.state.ejecutar_explorar(self._percepciones)
