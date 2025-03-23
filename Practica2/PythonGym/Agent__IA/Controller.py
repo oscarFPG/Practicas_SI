@@ -89,7 +89,6 @@ class Controller:
                 self.state._huyendo = False
                 self.state._cicloHuida = State.MAX_CICLOS_HUIDA
             else:
-                print("CICLOS DE HUIDA:" + str(self.state._cicloHuida))
                 self.state._cicloHuida = self.state._cicloHuida - 1
                 return self.state._ultimaDireccion, Param.NO_DISPARA
 

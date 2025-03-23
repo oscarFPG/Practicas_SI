@@ -145,18 +145,15 @@ class State:
 
     def ejecutar_defensa(self, perceptions, direccionRed):
 
-        print("\n ------------------------------------- Defensa -------------------------------------\n")
         siguienteDireccion = Param.QUIETO
         disparar = Param.NO_DISPARA
         puedoDisparar = perceptions[Param.CAN_SHOOT]
 
         # Estado disparar a la bala
         if(not puedoDisparar):
-            print('CONTRA')
             siguienteDireccion, disparar = self.ejecutar_contrataque(direccionRed)
             
         else:  # Estado alejarse
-            print('HUIR')
             siguienteDireccion, disparar = self.ejecutar_huir(perceptions, direccionRed)    
 
         return siguienteDireccion, disparar   
@@ -208,12 +205,6 @@ class State:
                        and (siguienteDireccion != Param.MOVER_ARRIBA or Param.MOVER_ABAJO)):
                         siguienteDireccion= lados[i]
 
-
-
-
-        # Elijo el mejor lado
-        #if(len(opciones) == 0):
-            #return Param.QUIETO, Param.DISPARA
         self._huyendo = True
         self._ultimaDireccion = siguienteDireccion
         return siguienteDireccion, Param.NO_DISPARA
@@ -330,7 +321,6 @@ class State:
     
     def moverAleatoriamente(self, probabilidad):
 
-        print("MOVIMIENTO ALEATORIO")
         if(probabilidad < 25):
             self._ultimaDireccion = Param.MOVER_DERECHA
             return Param.MOVER_DERECHA, Param.NO_DISPARA
