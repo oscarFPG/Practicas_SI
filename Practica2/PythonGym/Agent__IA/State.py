@@ -19,7 +19,6 @@ class State:
     def ejecutar_explorar(self, perceptions):
 
         randomNum = random.randint(0, 100)
-
         current_x = perceptions[Param.AGENT_X]
         current_y = perceptions[Param.AGENT_Y]
 
@@ -67,36 +66,33 @@ class State:
         derechaLibre = False if (objetos[2] == Param.MURO_IRROMPIBLE and distancias[2] < 0.5) else True
         izquierdaLibre = False if (objetos[3] == Param.MURO_IRROMPIBLE and distancias[3] < 0.5) else True
 
-        offset = 0.5
-        pos_x = perceptions[Param.AGENT_X]
-        pos_y = perceptions[Param.AGENT_Y]
+        siguienteDireccion = Param.QUIETO
         command_x = perceptions[Param.COMMAND_X]
         command_y = perceptions[Param.COMMAND_Y]
         minimaDistancia = 1000
-        siguienteDireccion = 0
+        offset = 0.5
 
         # Ver a que lado nos acercamos mas a la base y vamos en esa direccion -> Distancia entr dos puntos
         if(arribaLibre):
-            dist_arriba = self.calcularDistanciaEntrePuntos(pos_x, pos_y + offset, command_x, command_y)
+            dist_arriba = self.calcularDistanciaEntrePuntos(current_x, current_y + offset, command_x, command_y)
             if(dist_arriba < minimaDistancia):
                 minimaDistancia = dist_arriba
                 siguienteDireccion = Param.MOVER_ARRIBA
 
-
         if(abajoLibre):
-            dist_abajo = self.calcularDistanciaEntrePuntos(pos_x, pos_y - offset, command_x, command_y)
+            dist_abajo = self.calcularDistanciaEntrePuntos(current_x, current_y - offset, command_x, command_y)
             if(dist_abajo < minimaDistancia):
                 minimaDistancia = dist_abajo
                 siguienteDireccion = Param.MOVER_ABAJO
 
         if(derechaLibre):
-            dist_derecha = self.calcularDistanciaEntrePuntos(pos_x + offset, pos_y, command_x, command_y)
+            dist_derecha = self.calcularDistanciaEntrePuntos(current_x + offset, current_y, command_x, command_y)
             if(dist_derecha < minimaDistancia):
                 minimaDistancia = dist_derecha
                 siguienteDireccion = Param.MOVER_DERECHA
 
         if(izquierdaLibre):
-            dist_izquierda = self.calcularDistanciaEntrePuntos(pos_x - offset, pos_y, command_x, command_y)
+            dist_izquierda = self.calcularDistanciaEntrePuntos(current_x - offset, current_y, command_x, command_y)
             if(dist_izquierda < minimaDistancia):
                 minimaDistancia = dist_izquierda
                 siguienteDireccion = Param.MOVER_IZQUIERDA
@@ -112,7 +108,7 @@ class State:
         elif(siguienteDireccion == Param.MOVER_IZQUIERDA and (objetos[Param.OBJETO_IZQUIERDA] == Param.MURO and distancias[3] < 1.2563) or objetos[Param.OBJETO_IZQUIERDA] == Param.CENTRO_COMANDO):
             disparar = Param.DISPARA
 
-        if(abs(pos_x - command_x) < 1 and abs(pos_y - command_y) < 1):
+        if(abs(current_x - command_x) < 1 and abs(current_y - command_y) < 1):
             disparar = Param.DISPARA
 
 
