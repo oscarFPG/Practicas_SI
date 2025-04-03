@@ -18,12 +18,14 @@ class AStar:
         #GetSucesorInOpen(sucesor) nos devolverá None si no lo encuentra, si lo encuentra
         #es que ese sucesor ya está en la frontera de exploración, DEBEMOS MIRAR SI EL NUEVO COSTE ES MENOR QUE EL QUE TENIA ALMACENADO
         #SI esto es asi, hay que cambiarle el padre y setearle el nuevo coste.
+        
         self.open.clear()
         self.precessed.clear()
         self.open.append(self.problem.Initial())
         path = []
         #mientras no encontremos la meta y haya elementos en open....
         #TODO implementar el bucle de búsqueda del algoritmo A*
+
         return path
 
     #nos permite configurar un nodo (node) con el padre y la nueva G
@@ -47,8 +49,13 @@ class AStar:
 
     #reconstruye el path desde la meta encontrada.
     def ReconstructPath(self, goal):
+        
         path = []
-        #TODO: devuelve el path invertido desde la meta hasta que el padre sea None.
+        numNodes = j = goal.lenght
+        for i in range(0, numNodes):
+            path.append(goal[j])
+            j = j - 1
+
         return path
 
 

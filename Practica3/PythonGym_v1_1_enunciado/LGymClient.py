@@ -1,13 +1,3 @@
-# while True:
-        # receive data stream. it won't accept data packet greater than 1024 bytes
-        #data = conn.recv(1024).decode()
-        #if not data:
-            # if data is not received break
-        #    break
-        #print("from connected user: " + str(data))
-        #data = input(' -> ')
-        #conn.send(data.encode())  # send data to the client
-		
 import LGymConnect as LGymC
 import time
 
@@ -194,7 +184,7 @@ def agentLoop(agent, debug):
                             print("Percepcion recibida")
                         if debug :
                             print("Enviando acciones")
-                        action, fire=agent.Update(perception,map)
+                        action, fire = agent.Update(perception,map)
                         fireStr = "1" if fire == True else "0"
                         if client.SendAction(["movement","fire"],[str(action),fireStr]) :
                             if debug :

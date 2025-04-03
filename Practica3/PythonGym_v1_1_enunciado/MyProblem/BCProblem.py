@@ -13,7 +13,7 @@ class BCProblem(Problem):
 
     def __init__(self, initial, goal, xSize, ySize):
         super().__init__(initial, goal)
-        self.map = np.zeros((xSize,ySize),dtype=int)
+        self.map = np.zeros((xSize,ySize), dtype=int)
         self.xSize = xSize
         self.ySize = ySize
     
