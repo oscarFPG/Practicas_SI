@@ -72,7 +72,7 @@ class GoalOrientedAgent(BaseAgent):
             #-establecer la meta actual al problema para que A* sepa cual es.
 
             #-Calcular el plan usando A*
-
+            self.aStar.__init__(problem)
             print("TODO: _CreatePlan faltan cosas :)")
         return self.aStar.GetPlan()
         

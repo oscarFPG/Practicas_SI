@@ -34,14 +34,14 @@ class BCProblem(Problem):
     #Calcula la heuristica del nodo en base al problema planteado (Se necesita reimplementar)
     def Heuristic(self, node):
         #TODO: heurística del nodo
-        print("Aqui falta ncosas por hacer :) ")
+        print("En  Heuristic falta ncosas por hacer :) ")
         return 0
 
     #Genera la lista de sucesores del nodo (Se necesita reimplementar)
     def GetSucessors(self, node):
         successors = []
         #TODO: sucesores de un nodo dado
-        print("Aqui falta ncosas por hacer :) ")
+        print("En GetSucessors falta ncosas por hacer :) ")
         return successors
     
     #métodos estáticos
